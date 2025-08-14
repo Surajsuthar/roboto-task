@@ -16,7 +16,7 @@ export const adminClient = algoliaConfig.adminApiKey
   : null;
 
 export const blogIndex = searchClient.searchSingleIndex({
-  indexName: "blog_post",
+  indexName: process.env.ALGOLIA_INDEX_NAME!,
   searchParams: {
     query: "",
   },

@@ -48,6 +48,7 @@ export async function fetchAllBlogPostsForIndexing(): Promise<
 }
 
 export async function indexBlogPostsToAlgolia(): Promise<void> {
+  
   if (!adminClient) {
     console.error("Algolia admin client not configured");
     return;
@@ -57,12 +58,12 @@ export async function indexBlogPostsToAlgolia(): Promise<void> {
     const blogPosts = await fetchAllBlogPostsForIndexing();
 
     await adminClient.clearObjects({
-      indexName: "blog_post",
+      indexName: process.env.ALGOLIA_INDEX_NAME!,
     });
 
     if (blogPosts.length > 0) {
       await adminClient.saveObjects({
-        indexName: "blog_post",
+        indexName: process.env.ALGOLIA_INDEX_NAME!,
         objects: blogPosts as unknown as Record<string, unknown>[],
       });
       console.log(

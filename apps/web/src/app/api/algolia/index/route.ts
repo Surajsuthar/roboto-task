@@ -3,13 +3,12 @@ import { indexBlogPostsToAlgolia } from "@/lib/algolia/indexing";
 
 export async function POST(request: NextRequest) {
   try {
-    // Check for authorization (you might want to add proper auth)
+
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Trigger indexing
     await indexBlogPostsToAlgolia();
 
     return NextResponse.json(
