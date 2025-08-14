@@ -9,16 +9,6 @@
     "VERCEL_ENV",
     "NODE_ENV"
   ],
-  "pipeline": {
-    "build": {
-      "env": [
-        "SANITY_STUDIO_PROJECT_ID",
-        "SANITY_STUDIO_DATASET",
-        "SANITY_STUDIO_TITLE",
-        "SANITY_STUDIO_PRESENTATION_URL"
-      ]
-    }
-  },
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -28,6 +18,12 @@
         "!.next/cache/**",
         "dist/**",
         ".sanity/**"
+      ],
+      "env": [
+        "SANITY_STUDIO_PROJECT_ID",
+        "SANITY_STUDIO_DATASET",
+        "SANITY_STUDIO_TITLE",
+        "SANITY_STUDIO_PRESENTATION_URL"
       ]
     },
     "lint": {
