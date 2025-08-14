@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SanityImage } from "./sanity-image";
-import { Calendar, User } from "lucide-react"; 
-import { Badge } from "@workspace/ui/components/badge"; 
+import { Calendar, User } from "lucide-react";
+import { Badge } from "@workspace/ui/components/badge";
 import { BlogWithPokemon } from "@/types";
 
 interface BlogCardProps {
@@ -20,7 +20,6 @@ export function BlogCard({ blog }: BlogCardProps) {
   return (
     <article className="group relative bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow">
       <Link href={blog.slug ?? "#"} className="block">
-        {/* Image */}
         <div className="aspect-video overflow-hidden rounded-t-lg">
           {blog.image?.asset ? (
             <SanityImage
@@ -39,16 +38,6 @@ export function BlogCard({ blog }: BlogCardProps) {
 
         {/* Content */}
         <div className="p-4">
-          {/* Tags or Pokemon */}
-          <div className="flex items-center gap-2 mb-2">
-            {blog.pokemon?.name && (
-              <Badge variant="secondary" className="text-xs">
-                {blog.pokemon.name}
-              </Badge>
-            )}
-          </div>
-
-          {/* Title */}
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {blog.title}
           </h3>
@@ -90,9 +79,6 @@ export function BlogCard({ blog }: BlogCardProps) {
                 ) : null}
                 <span className="text-xs text-muted-foreground">
                   {blog.pokemon.name}{" "}
-                  {(blog.pokemon.types ?? []).length
-                    ? `• ${(blog.pokemon.types ?? []).join("/")}`
-                    : ""}
                 </span>
               </div>
             ) : null}

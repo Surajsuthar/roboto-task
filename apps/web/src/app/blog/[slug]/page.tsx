@@ -9,11 +9,11 @@ import { BlogCard } from "@/components/blog-card";
 import { BlogSearchWrapper } from "@/components/blog-search-wrapper";
 import { client } from "@/lib/sanity/client";
 import { sanityFetch } from "@/lib/sanity/live";
-import { 
-  queryBlogPaths, 
-  queryBlogSlugPageData, 
-  queryCategoryPaths, 
-  queryCategoryPageData 
+import {
+  queryBlogPaths,
+  queryBlogSlugPageData,
+  queryCategoryPaths,
+  queryCategoryPageData,
 } from "@/lib/sanity/query";
 import { getSEOMetadata } from "@/lib/seo";
 
@@ -45,9 +45,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
- 
+
   const { data } = await fetchBlogSlugPageData(slug, false);
-  
+
   if (data) {
     return getSEOMetadata({
       title: data?.title ?? data?.seoTitle ?? "",
@@ -58,7 +58,7 @@ export async function generateMetadata({
       pageType: "article",
     });
   }
-  
+
   const { data: cat } = await sanityFetch({
     query: queryCategoryPageData,
     params: { slug: `/blog/${slug}`, offset: 0, end: 1 },
@@ -102,7 +102,9 @@ export default async function BlogOrCategoryPage({
             <ArticleJsonLd article={stegaClean(data)} />
             <header className="mb-8">
               <h1 className="mt-2 text-4xl font-bold">{title}</h1>
-              <p className="mt-4 text-lg text-muted-foreground">{description}</p>
+              <p className="mt-4 text-lg text-muted-foreground">
+                {description}
+              </p>
             </header>
             {image && (
               <div className="mb-12">
@@ -130,7 +132,6 @@ export default async function BlogOrCategoryPage({
     );
   }
 
-
   const currentPage = Math.max(1, Number.parseInt(page ?? "1"));
   const PAGE_SIZE = 12;
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -148,15 +149,15 @@ export default async function BlogOrCategoryPage({
   return (
     <main className="bg-background">
       <div className="container my-16 mx-auto px-4 md:px-6">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">{category.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          {category.description}
-        </p>
-      </div>
-    </div>
-        <BlogSearchWrapper/>
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">{category.title}</h1>
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">
+              {category.description}
+            </p>
+          </div>
+        </div>
+        <BlogSearchWrapper />
 
         {posts.length > 0 ? (
           <div className="blog-content grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 mt-8">
@@ -166,7 +167,9 @@ export default async function BlogOrCategoryPage({
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No posts in this category yet.</p>
+            <p className="text-muted-foreground">
+              No posts in this category yet.
+            </p>
           </div>
         )}
 

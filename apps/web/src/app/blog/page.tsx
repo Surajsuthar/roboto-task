@@ -30,7 +30,7 @@ export async function generateMetadata() {
 export default async function BlogIndexPage() {
   const [[res, err], [catRes]] = await Promise.all([
     await handleErrors(sanityFetch({ query: queryBlogIndexPageData })),
-    await handleErrors(sanityFetch({ query: queryAllCategories }))
+    await handleErrors(sanityFetch({ query: queryAllCategories })),
   ]);
 
   if (err || !res?.data) notFound();
@@ -54,13 +54,13 @@ export default async function BlogIndexPage() {
     return (
       <main className="container flex flex-col space-y-2 my-16 mx-auto px-4 md:px-6">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-    </div>
+          <div className="mx-auto max-w-2xl text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">
+              {description}
+            </p>
+          </div>
+        </div>
         <BlogSearchWrapper />
         <div className="text-center py-12">
           <p className="text-muted-foreground">
@@ -84,16 +84,22 @@ export default async function BlogIndexPage() {
   return (
     <main className="bg-background">
       <div className="container my-16 mx-auto flex flex-col space-y-2 px-4 md:px-6">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          {description}
-        </p>
-      </div>
-    </div>
-        <CategoriesNav categories={(catRes?.data ?? []).map((c: any) => ({ _id: c._id, title: c.title, slug: c.slug }))} />
-        
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">
+              {description}
+            </p>
+          </div>
+        </div>
+        <CategoriesNav
+          categories={(catRes?.data ?? []).map((c: any) => ({
+            _id: c._id,
+            title: c.title,
+            slug: c.slug,
+          }))}
+        />
+
         {/* Search Component */}
         <BlogSearchWrapper />
 

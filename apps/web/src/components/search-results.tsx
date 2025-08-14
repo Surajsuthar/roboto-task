@@ -13,7 +13,12 @@ interface SearchResultsProps {
   className?: string;
 }
 
-export function SearchResults({ results, isSearching, query, className }: SearchResultsProps) {
+export function SearchResults({
+  results,
+  isSearching,
+  query,
+  className,
+}: SearchResultsProps) {
   if (isSearching) {
     return (
       <div className={`${className}`}>
@@ -48,10 +53,11 @@ export function SearchResults({ results, isSearching, query, className }: Search
     <div className={`${className}`}>
       <div className="mb-4">
         <p className="text-sm text-muted-foreground">
-          Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+          Found {results.length} result{results.length !== 1 ? "s" : ""} for "
+          {query}"
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {results.map((post) => (
           <SearchResultCard key={post.objectID} post={post} />
@@ -67,10 +73,10 @@ interface SearchResultCardProps {
 
 function SearchResultCard({ post }: SearchResultCardProps) {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -90,7 +96,7 @@ function SearchResultCard({ post }: SearchResultCardProps) {
             </div>
           )}
         </div>
-        
+
         <div className="p-4">
           <div className="flex items-center gap-2 mb-2">
             {post.tags && post.tags.length > 0 && (
@@ -99,15 +105,15 @@ function SearchResultCard({ post }: SearchResultCardProps) {
               </Badge>
             )}
           </div>
-          
+
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {post.title}
           </h3>
-          
+
           <p className="text-muted-foreground text-sm mb-3 line-clamp-3">
             {post.excerpt}
           </p>
-          
+
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             {post.publishedAt && (
               <div className="flex items-center gap-1">
@@ -115,7 +121,7 @@ function SearchResultCard({ post }: SearchResultCardProps) {
                 <span>{formatDate(post.publishedAt)}</span>
               </div>
             )}
-            
+
             {post.authorName && (
               <div className="flex items-center gap-1">
                 <User className="h-3 w-3" />
@@ -128,4 +134,3 @@ function SearchResultCard({ post }: SearchResultCardProps) {
     </article>
   );
 }
-

@@ -25,7 +25,9 @@ export function BlogSearch({
 }: BlogSearchProps) {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [searchCache, setSearchCache] = useState<Map<string, BlogPostForIndexing[]>>(new Map());
+  const [searchCache, setSearchCache] = useState<
+    Map<string, BlogPostForIndexing[]>
+  >(new Map());
 
   const debouncedQuery = useDebounce(query, 300);
 
@@ -42,7 +44,10 @@ export function BlogSearch({
 
   const saveCache = useCallback((cache: Map<string, BlogPostForIndexing[]>) => {
     setSearchCache(cache);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(cache.entries())));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(Array.from(cache.entries())),
+    );
   }, []);
 
   const performSearch = useCallback(
@@ -85,7 +90,7 @@ export function BlogSearch({
         onSearching(false);
       }
     },
-    [onSearchResults, onSearching, onQueryChange, searchCache, saveCache]
+    [onSearchResults, onSearching, onQueryChange, searchCache, saveCache],
   );
 
   useEffect(() => {
@@ -136,7 +141,8 @@ export function BlogSearch({
 
       {!blogIndex && (
         <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-          ⚠️ Search is not configured. Please set up Algolia environment variables.
+          ⚠️ Search is not configured. Please set up Algolia environment
+          variables.
         </div>
       )}
     </div>

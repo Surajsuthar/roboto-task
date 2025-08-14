@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import 'dotenv/config';
-import { createClient } from '@sanity/client';
-import { adminClient, algoliaConfig } from '../src/lib/algolia/config';
+import "dotenv/config";
+import { createClient } from "@sanity/client";
+import { adminClient, algoliaConfig } from "../src/lib/algolia/config";
 
 // Create Sanity client directly for the script
 const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '',
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-10-28',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "",
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-10-28",
   token: process.env.SANITY_API_READ_TOKEN,
   useCdn: false,
 });
@@ -56,15 +56,15 @@ async function fetchAllBlogPostsForIndexing(): Promise<BlogPostForIndexing[]> {
 
   return blogs.map((blog) => ({
     objectID: blog._id,
-    title: blog.title || '',
-    description: blog.description || '',
-    slug: blog.slug || '',
-    publishedAt: blog.publishedAt || blog._createdAt || '',
-    authorName: blog.authorName || '',
-    authorPosition: blog.authorPosition || '',
-    imageUrl: blog.imageUrl || '',
-    imageAlt: blog.imageAlt || '',
-    excerpt: blog.description || '',
+    title: blog.title || "",
+    description: blog.description || "",
+    slug: blog.slug || "",
+    publishedAt: blog.publishedAt || blog._createdAt || "",
+    authorName: blog.authorName || "",
+    authorPosition: blog.authorPosition || "",
+    imageUrl: blog.imageUrl || "",
+    imageAlt: blog.imageAlt || "",
+    excerpt: blog.description || "",
     tags: blog.tags || [],
     _type: blog._type,
     _id: blog._id,
@@ -73,15 +73,15 @@ async function fetchAllBlogPostsForIndexing(): Promise<BlogPostForIndexing[]> {
 
 async function indexBlogPostsToAlgolia(): Promise<void> {
   if (!adminClient) {
-    console.error('Algolia admin client not configured');
+    console.error("Algolia admin client not configured");
     return;
   }
 
   try {
     const blogPosts = await fetchAllBlogPostsForIndexing();
-    
+
     await adminClient.clearObjects({
-      indexName: "blog_post"
+      indexName: "blog_post",
     });
 
     // Add new objects
@@ -90,26 +90,26 @@ async function indexBlogPostsToAlgolia(): Promise<void> {
         indexName: "blog_post",
         objects: blogPosts as unknown as Record<string, unknown>[],
       });
-      console.log(`Successfully indexed ${blogPosts.length} blog posts to Algolia`);
+      console.log(
+        `Successfully indexed ${blogPosts.length} blog posts to Algolia`,
+      );
     }
-    
   } catch (error) {
-    console.error('Error indexing blog posts to Algolia:', error);
+    console.error("Error indexing blog posts to Algolia:", error);
     throw error;
   }
 }
 
 async function main() {
-  console.log('Starting Algolia indexing...');
-  
+  console.log("Starting Algolia indexing...");
+
   try {
     await indexBlogPostsToAlgolia();
-    console.log('✅ Blog posts indexed successfully!');
+    console.log("✅ Blog posts indexed successfully!");
   } catch (error) {
-    console.error('❌ Error indexing blog posts:', error);
+    console.error("❌ Error indexing blog posts:", error);
     process.exit(1);
   }
 }
 
 main();
-

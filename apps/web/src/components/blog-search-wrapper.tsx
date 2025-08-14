@@ -5,7 +5,6 @@ import { BlogSearch } from "./blog-search";
 import { SearchResults } from "./search-results";
 import { BlogPostForIndexing } from "@/lib/algolia/indexing";
 
-
 export function BlogSearchWrapper() {
   const [searchResults, setSearchResults] = useState<BlogPostForIndexing[]>([]);
   const [isSearching, setIsSearching] = useState(false);

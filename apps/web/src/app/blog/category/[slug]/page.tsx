@@ -8,7 +8,11 @@ import { getSEOMetadata } from "@/lib/seo";
 
 const PAGE_SIZE = 12;
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const resolvedParams = await params;
 
   const { data: result } = await sanityFetch({
@@ -31,20 +35,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   );
 }
 
-export default async function CategoryPage({ 
-  params, 
-  searchParams 
-}: { 
-  params: Promise<{ slug: string }>; 
-  searchParams: Promise<{ page?: string }> 
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
-    
-  const currentPage = Math.max(1, Number.parseInt(resolvedSearchParams.page ?? "1"));
+
+  const currentPage = Math.max(
+    1,
+    Number.parseInt(resolvedSearchParams.page ?? "1"),
+  );
   const offset = (currentPage - 1) * PAGE_SIZE;
   const end = offset + PAGE_SIZE;
-    
+
   const { data: res } = await sanityFetch({
     query: queryCategoryPageData,
     params: { slug: `/blog/category/${resolvedParams.slug}`, offset, end },
@@ -58,25 +65,27 @@ export default async function CategoryPage({
   return (
     <main className="bg-background">
       <div className="container my-16 mx-auto px-4 md:px-6">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">{category.title}</h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          {category.description}
-        </p>
-      </div>
-    </div>
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h1 className="text-3xl font-bold sm:text-4xl">{category.title}</h1>
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">
+              {category.description}
+            </p>
+          </div>
+        </div>
         <BlogSearchWrapper />
 
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 gap-8 md:gap-12 lg:grid-cols-2 mt-8">
             {posts.map((blog: any) => (
-              <BlogCard key={blog._id} blog={blog} />)
-            )}
+              <BlogCard key={blog._id} blog={blog} />
+            ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No posts in this category yet.</p>
+            <p className="text-muted-foreground">
+              No posts in this category yet.
+            </p>
           </div>
         )}
 

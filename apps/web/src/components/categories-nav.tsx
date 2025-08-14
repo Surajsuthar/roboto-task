@@ -37,5 +37,3 @@ export function CategoriesNav({ categories }: { categories: Category[] }) {
     </nav>
   );
 }
-
-

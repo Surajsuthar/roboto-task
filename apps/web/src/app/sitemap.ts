@@ -7,7 +7,8 @@ import { querySitemapData } from "@/lib/sanity/query";
 const baseUrl = getBaseUrl();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { slugPages, blogPages, categoryPages } = await client.fetch(querySitemapData);
+  const { slugPages, blogPages, categoryPages } =
+    await client.fetch(querySitemapData);
   return [
     {
       url: baseUrl,
@@ -15,23 +16,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...slugPages.map((page: { slug: string; lastModified?: string | Date }) => ({
-      url: `${baseUrl}${page.slug}`,
-      lastModified: new Date(page.lastModified ?? new Date()),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })),
-    ...blogPages.map((page: { slug: string; lastModified?: string | Date }) => ({
-      url: `${baseUrl}${page.slug}`,
-      lastModified: new Date(page.lastModified ?? new Date()),
-      changeFrequency: "weekly" as const,
-      priority: 0.5,
-    })),
-    ...categoryPages.map((page: { slug: string; lastModified?: string | Date }) => ({
-      url: `${baseUrl}${page.slug}`,
-      lastModified: new Date(page.lastModified ?? new Date()),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    })),
+    ...slugPages.map(
+      (page: { slug: string; lastModified?: string | Date }) => ({
+        url: `${baseUrl}${page.slug}`,
+        lastModified: new Date(page.lastModified ?? new Date()),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+      }),
+    ),
+    ...blogPages.map(
+      (page: { slug: string; lastModified?: string | Date }) => ({
+        url: `${baseUrl}${page.slug}`,
+        lastModified: new Date(page.lastModified ?? new Date()),
+        changeFrequency: "weekly" as const,
+        priority: 0.5,
+      }),
+    ),
+    ...categoryPages.map(
+      (page: { slug: string; lastModified?: string | Date }) => ({
+        url: `${baseUrl}${page.slug}`,
+        lastModified: new Date(page.lastModified ?? new Date()),
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+      }),
+    ),
   ];
 }

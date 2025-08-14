@@ -49,6 +49,7 @@ pnpm run index-algolia
 ```
 
 This will:
+
 - Fetch all blog posts from Sanity
 - Transform them into the correct format for Algolia
 - Upload them to your Algolia index
@@ -75,16 +76,19 @@ This will:
 ## Troubleshooting
 
 ### Search Not Working
+
 1. Check that all environment variables are set correctly
 2. Verify that your Algolia index has data
 3. Check the browser console for errors
 
 ### Indexing Fails
+
 1. Ensure your Sanity API tokens are valid
 2. Check that your Algolia admin API key is correct
 3. Verify your Algolia application ID
 
 ### Performance Issues
+
 1. The search uses debouncing to prevent excessive API calls
 2. Results are cached to improve repeat search performance
 3. Consider upgrading your Algolia plan if you exceed free tier limits
@@ -96,4 +100,3 @@ This will:
 - 1,000 search requests per day
 
 For most small to medium blogs, this should be sufficient.
-
