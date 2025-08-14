@@ -25,3 +25,6 @@ export const apiVersion =
  */
 export const studioUrl =
   process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || "http://localhost:3333";
+
+
+export const sanityToken = process.env.NEXT_PUBLIC_SANITY_API_TOKEN || "";

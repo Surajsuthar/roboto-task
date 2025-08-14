@@ -75,7 +75,7 @@ export function BlogSearch({
         }
 
         const { hits } = await searchClient.searchSingleIndex({
-          indexName: process.env.ALGOLIA_INDEX_NAME!,
+          indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!,
           searchParams: { query: searchQuery },
         });
 

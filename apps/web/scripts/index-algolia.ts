@@ -81,13 +81,13 @@ async function indexBlogPostsToAlgolia(): Promise<void> {
     const blogPosts = await fetchAllBlogPostsForIndexing();
 
     await adminClient.clearObjects({
-      indexName: process.env.ALGOLIA_INDEX_NAME!,
+      indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!,
     });
 
     // Add new objects
     if (blogPosts.length > 0) {
       await adminClient.saveObjects({
-        indexName: process.env.ALGOLIA_INDEX_NAME!,
+        indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!,
         objects: blogPosts as unknown as Record<string, unknown>[],
       });
       console.log(
