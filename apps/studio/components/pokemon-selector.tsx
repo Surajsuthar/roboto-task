@@ -1,80 +1,78 @@
-import { useClient } from "sanity";
+"use client";
+
 import { WarningOutlineIcon } from "@sanity/icons";
 import { Box, Button, Card, Flex, Stack, Text, TextInput } from "@sanity/ui";
 import { useCallback, useEffect, useState } from "react";
-import { set, unset, type ReferenceInputProps } from "sanity";
+import { set, unset } from "sanity";
 import { useDebounce } from "../utils/debounce";
 
 type PokemonApiType = {
   id: number;
   name: string;
   sprites?: { front_default?: string | null };
-  types?: Array<{ slot: number; type: { name: string } }>;
 };
 
-export type PokemonValue = { _ref: string; _type: "reference" };
-
-// Fetch Pokémon from public API
 async function fetchPokemon(term: string): Promise<PokemonApiType | null> {
   const normalized = term.trim().toLowerCase();
   if (!normalized) return null;
   try {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${normalized}`);
     if (!res.ok) return null;
-    return (await res.json()) as PokemonApiType;
-  } catch {
+    const data = (await res.json()) as PokemonApiType;
+
+    // Log the exact data we're getting
+    console.log("Pokemon data:", JSON.stringify(data, null, 2));
+    console.log("Sprite URL:", data.sprites?.front_default);
+    console.log("Sprite URL type:", typeof data.sprites?.front_default);
+
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
     return null;
   }
 }
 
-export function PokemonSelector(props: ReferenceInputProps) {
-  const { value, onChange, readOnly, path } = props;
-  const client = useClient();
+export function PokemonSelector(props: any) {
+  const { value, onChange, readOnly } = props;
 
   const [term, setTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PokemonApiType | null>(null);
+  const [selectedPokemon, setSelectedPokemon] = useState<PokemonApiType | null>(
+    null,
+  );
 
-  const hasSelection = Boolean(value?._ref);
   const debouncedTerm = useDebounce(term, 300);
 
-  const handleApply = useCallback(
-    async (api: PokemonApiType | null) => {
-      try {
-        if (api) {
-          // Create the Pokemon document first
-          const pokemonDoc = await client.createIfNotExists({
-            _id: `pokemon-${api.id}`,
-            _type: "pokemon",
-            id: api.id,
-            name: api.name,
-            types: api.types?.map(t => t.type.name) ?? [],
-            sprite: api.sprites?.front_default ?? "",
-          });
-          
-          // Set the reference
-          onChange(set({ _ref: pokemonDoc._id, _type: "reference" }));
-        } else {
-          // Clear the reference
-          onChange(unset());
-        }
-      } catch (err) {
-        console.error("Error handling Pokemon selection:", err);
-        setError("Failed to save Pokemon selection");
-      }
+  const handleSelect = useCallback(
+    (pokemon: PokemonApiType) => {
+      console.log("Selecting pokemon:", pokemon);
+
+      // Clean up the pokemon data to match schema expectations
+      const cleanPokemon = {
+        id: pokemon.id,
+        name: pokemon.name,
+        sprite: pokemon.sprites?.front_default || null, // Also set the simple sprite field
+      };
+
+      setSelectedPokemon(pokemon);
+      onChange(set(cleanPokemon));
     },
-    [client, onChange]
+    [onChange],
   );
 
   const handleClear = useCallback(() => {
-    handleApply(null);
+    setSelectedPokemon(null);
     setResult(null);
     setTerm("");
     setError(null);
-  }, [handleApply]);
+    onChange(unset());
+  }, [onChange]);
 
   useEffect(() => {
+    console.log("Effect running with debouncedTerm:", debouncedTerm);
+
     if (!debouncedTerm) {
       setResult(null);
       setError(null);
@@ -86,6 +84,7 @@ export function PokemonSelector(props: ReferenceInputProps) {
       setError(null);
       try {
         const api = await fetchPokemon(debouncedTerm);
+        console.log("Fetch result:", api);
         if (!api) {
           setResult(null);
           setError("No Pokémon found");
@@ -93,6 +92,7 @@ export function PokemonSelector(props: ReferenceInputProps) {
           setResult(api);
         }
       } catch (err) {
+        console.error("Search error:", err);
         setResult(null);
         setError("Error searching for Pokémon");
       }
@@ -110,12 +110,15 @@ export function PokemonSelector(props: ReferenceInputProps) {
         <Box flex={1}>
           <TextInput
             value={term}
-            onChange={(e) => setTerm(e.currentTarget.value)}
+            onChange={(e) => {
+              console.log("Input changing to:", e.currentTarget.value);
+              setTerm(e.currentTarget.value);
+            }}
             placeholder="e.g. pikachu, bulbasaur, charizard"
             disabled={readOnly}
           />
         </Box>
-        {hasSelection && (
+        {selectedPokemon && (
           <Button
             mode="ghost"
             padding={3}
@@ -127,16 +130,20 @@ export function PokemonSelector(props: ReferenceInputProps) {
         )}
       </Flex>
 
-      {isLoading && <Text size={1} muted>Loading...</Text>}
+      {isLoading && (
+        <Text size={1} muted>
+          Loading...
+        </Text>
+      )}
 
       {error && (
         <Flex gap={2} align="center">
           <WarningOutlineIcon />
-          <Text size={1} >{error}</Text>
+          <Text size={1}>{error}</Text>
         </Flex>
       )}
 
-      {result && !hasSelection && (
+      {result && !selectedPokemon && (
         <Card padding={3} radius={2} shadow={1} tone="primary">
           <Flex align="center" gap={3}>
             <Box
@@ -148,49 +155,53 @@ export function PokemonSelector(props: ReferenceInputProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "24px"
               }}
             >
-              🔮
+              {/* COMPLETELY REMOVED IMAGE - JUST SHOW EMOJI */}
+              <Text>🔮</Text>
             </Box>
             <Box flex={1}>
               <Text size={2} weight="semibold">
                 {result.name}
               </Text>
               <Text size={1} muted>
-                {(result.types ?? []).map(t => t.type.name).join(", ")}
+                ID: {result.id}
               </Text>
             </Box>
             <Button
               text="Select"
               tone="primary"
-              onClick={() => handleApply(result)}
+              onClick={() => handleSelect(result)}
               disabled={readOnly}
             />
           </Flex>
         </Card>
       )}
 
-      {hasSelection && (
+      {selectedPokemon && (
         <Card padding={3} radius={2} shadow={1} tone="positive">
           <Flex align="center" gap={3}>
             <Box
               style={{
-                width: 40,
-                height: 40,
+                width: 56,
+                height: 56,
                 borderRadius: 8,
                 backgroundColor: "#e6f7ff",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "20px"
               }}
             >
-              ✅
+              {/* ALSO NO IMAGE HERE */}
+              <Text>✅</Text>
             </Box>
             <Box flex={1}>
-              <Text size={2} weight="semibold">Pokémon Selected</Text>
-              <Text size={1} muted>ID: {value?._ref}</Text>
+              <Text size={2} weight="semibold">
+                Selected: {selectedPokemon.name}
+              </Text>
+              <Text size={1} muted>
+                ID: {selectedPokemon.id}
+              </Text>
             </Box>
           </Flex>
         </Card>

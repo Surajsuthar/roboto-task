@@ -1,4 +1,7 @@
-import { orderRankField, orderRankOrdering } from "@sanity/orderable-document-list";
+import {
+  orderRankField,
+  orderRankOrdering,
+} from "@sanity/orderable-document-list";
 import { TagIcon } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
@@ -67,5 +70,3 @@ export const category = defineType({
     }),
   },
 });
-
-

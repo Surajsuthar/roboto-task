@@ -346,5 +346,3 @@ export const getPresentationUrl = () => {
 
   return presentationUrl;
 };
-
-

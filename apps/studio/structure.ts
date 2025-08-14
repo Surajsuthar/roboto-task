@@ -123,8 +123,8 @@ export const structure = (
         icon: MessageCircleQuestion,
       }),
       createList({ S, type: "author", title: "Authors", icon: User }),
-      createList({S, type: "category", title: "Category", icon: TagIcon}),
-      createList({S, type: "pokemon", title: "Pokemon" }),
+      createList({ S, type: "category", title: "Category", icon: TagIcon }),
+      createList({ S, type: "pokemon", title: "Pokemon" }),
       S.divider(),
       S.listItem()
         .title("Site Configuration")

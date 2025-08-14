@@ -12,4 +12,12 @@ import { settings } from "./settings";
 
 export const singletons = [homePage, blogIndex, settings, footer, navbar];
 
-export const documents = [blog, category, page, faq, author, pokemon, ...singletons];
+export const documents = [
+  blog,
+  category,
+  page,
+  faq,
+  author,
+  pokemon,
+  ...singletons,
+];
