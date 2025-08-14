@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import { BlogPostForIndexing } from "@/lib/algolia/indexing";
-import { SanityImage } from "./sanity-image";
 import { Badge } from "@workspace/ui/components/badge";
 
 interface SearchResultsProps {
