@@ -18,18 +18,16 @@ import { structure } from "./structure";
 import { createPageTemplate, getPresentationUrl } from "./utils/helper";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
-const dataset = process.env.SANITY_STUDIO_DATASET;
-const title = process.env.SANITY_STUDIO_TITLE;
+const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
+const title = process.env.SANITY_STUDIO_TITLE ?? "Turbo Studio";
 
 export default defineConfig({
   name: "default",
-  title: title ?? "Turbo Studio",
+  title: title,
   projectId: projectId,
+  dataset: dataset,
   icon: Logo,
-  dataset: dataset ?? "production",
-  mediaLibrary: {
-    enabled: true,
-  },
+  
   plugins: [
     presentationTool({
       resolve: {
@@ -52,22 +50,27 @@ export default defineConfig({
     presentationUrl(),
     unsplashImageAsset(),
   ],
-  env: {
-    api: {
-      token: process.env.SANITY_API_TOKEN,
-    }
+
+  api: {
+    projectId: projectId,
+    dataset: dataset,
   },
   form: {
     image: {
-      assetSources: (sources) =>
-        sources.filter((source) => source.name !== "sanity-default"),
+      assetSources: (prev) => [
+        mediaAssetSource,
+        unsplashAssetSource,
+        ...prev,
+      ],
     },
-    // Disable the default for file assets
     file: {
-      assetSources: (sources) =>
-        sources.filter((source) => source.name !== "sanity-default"),
+      assetSources: (prev) => [
+        mediaAssetSource,
+        ...prev,
+      ],
     },
   },
+
   document: {
     newDocumentOptions: (prev, { creationContext }) => {
       const { type } = creationContext;
@@ -75,6 +78,7 @@ export default defineConfig({
       return prev;
     },
   },
+
   schema: {
     types: schemaTypes,
     templates: createPageTemplate(),
