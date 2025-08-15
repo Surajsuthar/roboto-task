@@ -13,6 +13,7 @@ import { PreviewBar } from "@/components/preview-bar";
 import { SanityLive } from "@/lib/sanity/live";
 
 import { Providers } from "../components/providers";
+import { ClientProviders } from "@/components/client-providers";
 
 const fontGeist = Geist({
   subsets: ["latin"],
@@ -30,30 +31,38 @@ const fontMono = Geist_Mono({
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   preconnect("https://cdn.sanity.io");
   prefetchDNS("https://cdn.sanity.io");
+
+  const { isEnabled } = await draftMode();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${fontGeist.variable} ${fontMono.variable} font-geist antialiased`}
       >
-        <Providers>
-          <Suspense fallback={<NavbarSkeleton />}>
-            <NavbarServer />
-          </Suspense>
-          {children}
-          <SanityLive />
-          <CombinedJsonLd includeWebsite includeOrganization />
-          {(await draftMode()).isEnabled && (
-            <>
-              <PreviewBar />
-              <VisualEditing />
-            </>
-          )}
-        </Providers>
+        <ClientProviders>
+          <Providers>
+            <Suspense fallback={<NavbarSkeleton />}>
+              <NavbarServer />
+            </Suspense>
+
+            {children}
+
+            <SanityLive />
+            <CombinedJsonLd includeWebsite includeOrganization />
+
+            {isEnabled && (
+              <>
+                <PreviewBar />
+                <VisualEditing />
+              </>
+            )}
+          </Providers>
+        </ClientProviders>
       </body>
     </html>
   );
