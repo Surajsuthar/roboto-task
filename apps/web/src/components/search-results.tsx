@@ -47,7 +47,7 @@ export function SearchResults({
       </div>
     );
   }
-
+  
   return (
     <div className={`${className}`}>
       <div className="mb-4">
@@ -85,8 +85,8 @@ function SearchResultCard({ post }: SearchResultCardProps) {
         <div className="aspect-video overflow-hidden rounded-t-lg">
           {post.imageUrl ? (
             <img
-              src={post.imageUrl}
-              alt={post.imageAlt || post.title}
+              src={post.imageUrl as string}
+              alt={post.title}
               className="w-full h-full object-cover transition-transform group-hover:scale-105"
             />
           ) : (

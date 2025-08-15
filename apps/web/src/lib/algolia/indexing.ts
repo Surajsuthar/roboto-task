@@ -1,6 +1,6 @@
 import { adminClient, algoliaConfig } from "./config";
 import { sanityFetch } from "../sanity/live";
-import { queryAllBlogPosts } from "../sanity/query";
+import { queryAllBlogPosts, queryBlogIndexPageData } from "../sanity/query";
 
 export interface BlogPostForIndexing {
   objectID: string;
@@ -11,7 +11,6 @@ export interface BlogPostForIndexing {
   authorName?: string;
   authorPosition?: string;
   imageUrl?: string;
-  imageAlt?: string;
   excerpt: string;
   tags?: string[];
   _type: string;
@@ -21,25 +20,37 @@ export interface BlogPostForIndexing {
 export async function fetchAllBlogPostsForIndexing(): Promise<
   BlogPostForIndexing[]
 > {
-  const { data: blogs } = await sanityFetch({
-    query: queryAllBlogPosts,
+  
+  const { data: blog } = await sanityFetch({
+    query: queryBlogIndexPageData,
     stega: false,
   });
 
+  const {
+    blogs = [],
+    title,
+    description,
+    pageBuilder = [],
+    _id,
+    _type,
+    displayFeaturedBlogs,
+    featuredBlogsCount,
+  } = blog;
+
+  
   if (!blogs || !Array.isArray(blogs)) {
     return [];
   }
-
+  
   return blogs.map((blog) => ({
     objectID: blog._id,
     title: blog.title || "",
     description: blog.description || "",
     slug: blog.slug || "",
     publishedAt: blog.publishedAt || blog._createdAt || "",
-    authorName: blog.authors?.[0]?.name || "",
-    authorPosition: blog.authors?.[0]?.position || "",
-    imageUrl: blog.image?.asset?.url || "",
-    imageAlt: blog.image?.alt || "",
+    authorName: blog.authors?.name || "",
+    authorPosition: blog.authors?.position || "",
+    imageUrl: blog.image.blurData || "",
     excerpt: blog.description || "",
     tags: blog.tags || [],
     _type: blog._type,
