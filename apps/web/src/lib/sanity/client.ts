@@ -14,6 +14,7 @@ export const client = createClient({
     studioUrl,
     enabled: process.env.NEXT_PUBLIC_VERCEL_ENV === "preview",
   },
+  token: sanityToken
 });
 
 const imageBuilder = createImageUrlBuilder({

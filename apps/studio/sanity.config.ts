@@ -52,7 +52,11 @@ export default defineConfig({
     presentationUrl(),
     unsplashImageAsset(),
   ],
-
+  env: {
+    api: {
+      token: process.env.SANITY_API_TOKEN,
+    }
+  },
   form: {
     image: {
       assetSources: (sources) =>
