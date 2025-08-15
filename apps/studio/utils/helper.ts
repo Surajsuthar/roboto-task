@@ -4,7 +4,7 @@ import {
   type StringOptions,
 } from "sanity";
 
-import type { Page, Tree, TreeNode } from "./types";
+import type { Page, PokemonApiType, Tree, TreeNode } from "./types";
 
 export const isRelativeUrl = (url: string) =>
   url.startsWith("/") || url.startsWith("#") || url.startsWith("?");
@@ -346,3 +346,18 @@ export const getPresentationUrl = () => {
 
   return presentationUrl;
 };
+
+
+export async function fetchPokemon(term: string): Promise<PokemonApiType | null> {
+  const normalized = term.trim().toLowerCase();
+  if (!normalized) return null;
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${normalized}`);
+    if (!res.ok) return null;
+    const data = (await res.json()) as PokemonApiType;
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return null;
+  }
+} 

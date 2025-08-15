@@ -155,3 +155,10 @@ export type PathnameParams = Omit<
   name?: string;
   options?: PathnameOptions;
 };
+
+
+export type PokemonApiType = {
+  id: number;
+  name: string;
+  sprites?: { front_default?: string | null };
+};

@@ -152,7 +152,7 @@ export const blog = defineType({
     }),
     defineField({
       name: "pokemon",
-      title: "Pokemon (Async Selector)",
+      title: "Pokemon",
       type: "reference",
       to: [{ type: "pokemon" }],
       description: "Search and attach a Pokemon from PokeAPI",

@@ -1,13 +1,12 @@
 import { defineField, defineType } from "sanity";
 
-export const pokemon = defineField({
+export const pokemon = defineType({
   name: "pokemon",
   title: "Pokemon",
-  type: "object",
+  type: "document",
   fields: [
     defineField({ name: "id", title: "ID", type: "number" }),
     defineField({ name: "name", title: "Name", type: "string" }),
-    // Keep this field for backward compatibility or if you're still using it somewhere
     defineField({
       name: "sprite",
       title: "Sprite URL",
