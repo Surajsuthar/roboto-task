@@ -10,9 +10,6 @@ import { PokemonApiType } from "../utils/types";
 import { fetchPokemon } from "../utils/helper";
 
 
-
-
-
 export function PokemonSelector({ value, onChange, readOnly }: any) {
   const client = useClient();
 

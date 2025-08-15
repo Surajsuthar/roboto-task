@@ -337,7 +337,7 @@ export const getPresentationUrl = () => {
     return "http://localhost:3000";
   }
 
-  const presentationUrl = process.env.SANITY_STUDIO_PRESENTATION_URL || "https://roboto-studio.vercel.app";;
+  const presentationUrl = process.env.SANITY_STUDIO_PRESENTATION_URL || "https://roboto-web.vercel.app";;
   if (!presentationUrl) {
     throw new Error(
       "SANITY_STUDIO_PRESENTATION_URL must be set in production environment",

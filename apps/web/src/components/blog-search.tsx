@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { blogIndex, searchClient } from "@/lib/algolia/config";
 import { BlogPostForIndexing } from "@/lib/algolia/indexing";
@@ -9,6 +9,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 
 const STORAGE_KEY = "blogSearchCache";
+const QUERY_KEY = "lastSearchQuery";
 
 interface BlogSearchProps {
   onSearchResults: (results: BlogPostForIndexing[]) => void;
@@ -29,37 +30,41 @@ export function BlogSearch({
     Map<string, BlogPostForIndexing[]>
   >(new Map());
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    const storedCache = localStorage.getItem(STORAGE_KEY);
+    if (storedCache) {
       try {
-        setSearchCache(new Map(JSON.parse(stored)));
+        setSearchCache(new Map(JSON.parse(storedCache)));
       } catch {
         console.warn("Failed to parse search cache");
       }
     }
+
+    const storedQuery = localStorage.getItem(QUERY_KEY);
+    if (storedQuery) {
+      setQuery(storedQuery);
+    }
   }, []);
 
-  const saveCache = useCallback((cache: Map<string, BlogPostForIndexing[]>) => {
-    setSearchCache(cache);
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(Array.from(cache.entries())),
-    );
-  }, []);
+  useEffect(() => {
+    localStorage.setItem(QUERY_KEY, query);
+  }, [query]);
 
   const performSearch = useCallback(
     async (searchQuery: string) => {
-      onQueryChange(searchQuery);
+      const trimmedQuery = searchQuery.trim();
+      onQueryChange(trimmedQuery);
 
-      if (!searchQuery.trim()) {
-        onSearchResults([]);
+      if (!trimmedQuery) {
+        //@ts-ignore not found
+        onSearchResults((prev: any) => (prev.length ? [] : prev));
         return;
       }
 
-      const cachedResults = searchCache.get(searchQuery);
+      const cachedResults = searchCache.get(trimmedQuery);
       if (cachedResults) {
         onSearchResults(cachedResults);
         return;
@@ -76,21 +81,30 @@ export function BlogSearch({
 
         const { hits } = await searchClient.searchSingleIndex({
           indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME!,
-          searchParams: { query: searchQuery },
+          searchParams: { query: trimmedQuery },
         });
 
         const results = hits as BlogPostForIndexing[];
-        const newCache = new Map(searchCache).set(searchQuery, results);
-        saveCache(newCache);
+
+        setSearchCache((prevCache) => {
+          const newCache = new Map(prevCache).set(trimmedQuery, results);
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(Array.from(newCache.entries()))
+          );
+          return newCache;
+        });
+
         onSearchResults(results);
       } catch {
         onSearchResults([]);
       } finally {
         setIsSearching(false);
         onSearching(false);
+        inputRef.current?.focus();
       }
     },
-    [onSearchResults, onSearching, onQueryChange, searchCache, saveCache],
+    [onSearchResults, onSearching, onQueryChange, searchCache]
   );
 
   useEffect(() => {
@@ -101,6 +115,7 @@ export function BlogSearch({
     setQuery("");
     onQueryChange("");
     onSearchResults([]);
+    inputRef.current?.focus();
   }, [onQueryChange, onSearchResults]);
 
   const hasQuery = query.trim().length > 0;
@@ -110,6 +125,7 @@ export function BlogSearch({
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
+          ref={inputRef}
           type="text"
           placeholder="Search blog posts..."
           value={query}
