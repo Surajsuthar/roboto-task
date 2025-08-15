@@ -36,20 +36,17 @@ export function BlogCard({ blog }: BlogCardProps) {
           )}
         </div>
 
-        {/* Content */}
         <div className="p-4">
           <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
             {blog.title}
           </h3>
 
-          {/* Description */}
           {blog.description && (
             <p className="text-muted-foreground text-sm mb-3 line-clamp-3">
               {blog.description}
             </p>
           )}
 
-          {/* Meta Info */}
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             {blog.publishedAt && (
               <div className="flex items-center gap-1">

@@ -91,7 +91,7 @@ export default async function BlogOrCategoryPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const [{ slug }, { page }] = await Promise.all([params, searchParams]);
-  // Try blog first
+  
   const { data } = await fetchBlogSlugPageData(slug);
   if (data) {
     const { title, description, image, richText } = data ?? {};
